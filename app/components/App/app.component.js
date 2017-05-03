@@ -1,8 +1,10 @@
 import React, {Component} from "react";
-import {Menu} from "semantic-ui-react";
+import {Menu, Container} from "semantic-ui-react";
 
 import Login from "../Login/login.component";
 import Register from "../Register/register.component";
+import Music from "../Music/music.component";
+
 
 class App extends Component {
 
@@ -45,7 +47,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Menu secondary stackable>
+                <Menu secondary stackable id="music">
                     <Menu.Menu position='right'>
                         <Menu.Item name='login' onClick={this.login}/>
                         <Menu.Item name='register' onClick={this.register}/>
@@ -54,6 +56,9 @@ class App extends Component {
                 <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
                 <Register showRegisterModal={this.state.showRegisterModal}
                           closeRegisterModal={this.closeRegisterModal}/>
+                <Container>
+                    <Music />
+                </Container>
             </div>
         )
     }
