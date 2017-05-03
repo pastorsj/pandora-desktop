@@ -13,8 +13,13 @@
 
 #music {
     flex:1;
+    position: absolute;
+    width: 80%;
+    bottom: 10px;
 }
 
 #player {
     margin: 0 auto;
+    width: 100%;
 }
+

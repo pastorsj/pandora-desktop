@@ -47,7 +47,7 @@ class App extends Component {
     render() {
         return (
             <div>
-                <Menu secondary stackable id="music">
+                <Menu secondary id="menu">
                     <Menu.Menu position='right'>
                         <Menu.Item name='login' onClick={this.login}/>
                         <Menu.Item name='register' onClick={this.register}/>
