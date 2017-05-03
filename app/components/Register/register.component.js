@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {Modal, Header, Form, Label, Input, Button, Icon} from 'semantic-ui-react';
+import axios from 'axios';
+import Constants from '../constants';
 
 class Register extends Component {
 
@@ -11,16 +13,16 @@ class Register extends Component {
             password: "",
             confirmationPassword: "",
             validForm: false
-        }
-        this.getEmail = this.getEmail.bind(this)
-        this.getPassword = this.getPassword.bind(this)
-        this.getConfirmationPassword = this.getConfirmationPassword.bind(this)
-        this.getUsername = this.getUsername.bind(this)
-        this.setValidClientForm = this.setValidClientForm.bind(this)
-        this.register = this.register.bind(this)
+        };
+        this.getEmail = this.getEmail.bind(this);
+        this.getPassword = this.getPassword.bind(this);
+        this.getConfirmationPassword = this.getConfirmationPassword.bind(this);
+        this.getUsername = this.getUsername.bind(this);
+        this.setValidClientForm = this.setValidClientForm.bind(this);
+        this.register = this.register.bind(this);
     }
 
-    getEmail(event){
+    getEmail(event) {
         this.setState({
             email: event.target.value.toString()
         }, () => {
@@ -59,7 +61,21 @@ class Register extends Component {
     }
 
     register() {
-        console.log("Registering User")
+        axios({
+            method: 'post',
+            url: `${Constants.API_URL}/register`,
+            data: {
+                username: this.state.username,
+                email: this.state.email,
+                password: this.state.password
+            }
+        }).then((res) => {
+            console.log('Result ', res.data);
+            Constants.cookies.set('jwt', res.data);
+            this.props.closeRegisterModal();
+        }).catch((err) => {
+            console.error('Error ', err);
+        });
         this.props.closeRegisterModal();
     }
 
@@ -71,7 +87,7 @@ class Register extends Component {
                     <Header icon='archive' content='Register'/>
                     <Modal.Content>
                         <Form>
-                           <Form.Field error={this.state.email === ''}>
+                            <Form.Field error={this.state.email === ''}>
                                 <Label>Email</Label>
                                 <Input placeholder='Email' onChange={this.getEmail} value={this.state.email}
                                        spellCheck='true'/>
@@ -83,11 +99,13 @@ class Register extends Component {
                             </Form.Field>
                             <Form.Field error={this.state.password === ''}>
                                 <Label>Password</Label>
-                                <Input placeholder='Password' type="password" onChange={this.getPassword} value={this.state.password}/>
+                                <Input placeholder='Password' type="password" onChange={this.getPassword}
+                                       value={this.state.password}/>
                             </Form.Field>
                             <Form.Field error={this.state.confirmationPassword === ''}>
                                 <Label>ConfirmationPassword</Label>
-                                <Input placeholder='Password Confirmation' type="password" onChange={this.getConfirmationPassword} value={this.state.confirmationPassword}/>
+                                <Input placeholder='Password Confirmation' type="password"
+                                       onChange={this.getConfirmationPassword} value={this.state.confirmationPassword}/>
                             </Form.Field>
                         </Form>
                     </Modal.Content>

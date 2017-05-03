@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import {Modal, Header, Form, Label, Input, Button, Icon} from 'semantic-ui-react';
+import axios from 'axios';
+import Constants from '../constants';
 
 class Login extends Component {
 
@@ -39,8 +41,20 @@ class Login extends Component {
     }
 
     login() {
-        console.log("Logging in")
-        this.props.closeLoginModal();
+        axios({
+            method: 'get',
+            url: `${Constants.API_URL}/login`,
+            headers: {
+                "Authorization": this.state.username + ":" + this.state.password,
+                "Content-Type": "application/json"
+            }
+        }).then((res) => {
+            console.log('Result ', res.data);
+            Constants.cookies.set('jwt', res.data);
+            this.props.closeLoginModal();
+        }).catch((err) => {
+            console.error('Error ', err);
+        })
     }
 
     render() {
@@ -58,7 +72,8 @@ class Login extends Component {
                             </Form.Field>
                             <Form.Field error={this.state.password === ''}>
                                 <Label>Password</Label>
-                                <Input placeholder='Password' type="password" onChange={this.getPassword} value={this.state.password}
+                                <Input placeholder='Password' type="password" onChange={this.getPassword}
+                                       value={this.state.password}
                                        spellCheck='true'/>
                             </Form.Field>
                         </Form>
