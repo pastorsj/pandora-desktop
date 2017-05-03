@@ -8,7 +8,7 @@
 
 #menu {
     height: 50px;
-    background: yellow;
+    background: rgba(128,128,128, .5);
 }
 
 #music {
@@ -23,3 +23,33 @@
     width: 100%;
 }
 
+#logo {
+    max-width: 30%;
+}
+
+.menuButton {
+	-moz-box-shadow: 0px 10px 14px -7px #276873;
+	-webkit-box-shadow: 0px 10px 14px -7px #276873;
+	box-shadow: 0px 10px 14px -7px #276873;
+	background-color:#599bb3;
+	-moz-border-radius:8px;
+	-webkit-border-radius:8px;
+	border-radius:8px;
+	display:inline-block;
+	cursor:pointer;
+	color:#ffffff;
+	font-family:Arial;
+	font-size:20px;
+	font-weight:bold;
+	padding:13px 32px;
+	text-decoration:none;
+	text-shadow:0px 1px 0px #3d768a;
+    opacity: .7;
+}
+.menuButton:hover {
+	background-color:#385c63;
+}
+.menuButton:active {
+	position:relative;
+	top:1px;
+}

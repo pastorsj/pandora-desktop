@@ -6,6 +6,7 @@ import Register from "../Register/register.component";
 import Music from "../Music/music.component";
 
 
+
 class App extends Component {
 
     constructor(props) {
@@ -16,6 +17,7 @@ class App extends Component {
         };
         this.login = this.login.bind(this);
         this.register = this.register.bind(this);
+        this.logout = this.logout.bind(this);
         this.closeLoginModal = this.closeLoginModal.bind(this);
         this.closeRegisterModal = this.closeRegisterModal.bind(this);
     }
@@ -24,6 +26,11 @@ class App extends Component {
         this.setState({
             showLoginModal: true
         });
+    }
+
+    logout() {
+        window.sessionStorage.setItem("jwt", null)
+        this.forceUpdate()
     }
 
     register() {
@@ -48,10 +55,14 @@ class App extends Component {
         return (
             <div>
                 <Menu secondary id="menu">
-                    <Menu.Menu position='right'>
-                        <Menu.Item name='login' onClick={this.login}/>
-                        <Menu.Item name='register' onClick={this.register}/>
+                    <Menu.Menu>
+                        <img src="/Users/TheSiscoKid/pandora-desktop/app/public/css/assets/logo.png" id="logo"></img>
                     </Menu.Menu>
+                    {
+                        window.sessionStorage.getItem('jwt') !== "null" ?
+                            (<Menu.Menu position='right'><button name='logout' className="menuButton" onClick={this.logout}>Logout</button></Menu.Menu>) :
+                            (<Menu.Menu position='right'><button name='login' className="menuButton" onClick={this.login}>Login</button><button name='register' className="menuButton" onClick={this.register}>Register</button></Menu.Menu>)
+                    }
                 </Menu>
                 <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
                 <Register showRegisterModal={this.state.showRegisterModal}
