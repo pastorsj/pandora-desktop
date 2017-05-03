@@ -58,7 +58,7 @@ class Login extends Component {
                             </Form.Field>
                             <Form.Field error={this.state.password === ''}>
                                 <Label>Password</Label>
-                                <Input placeholder='Password' onChange={this.getPassword} value={this.state.password}
+                                <Input placeholder='Password' type="password" onChange={this.getPassword} value={this.state.password}
                                        spellCheck='true'/>
                             </Form.Field>
                         </Form>
