@@ -43,3 +43,4 @@ dump.rdb
 
 app/public/js/bundle.js
 yarn.lock
+*.DS_Store
