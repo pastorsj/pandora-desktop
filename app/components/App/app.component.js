@@ -1,9 +1,8 @@
-import React, { Component } from 'react';
-import ReactPlayer from 'react-player';
-import { Menu } from 'semantic-ui-react';
+import React, {Component} from "react";
+import {Menu} from "semantic-ui-react";
 
-import Login from '../Login/login.component';
-import Register from '../Register/register.component';
+import Login from "../Login/login.component";
+import Register from "../Register/register.component";
 
 class App extends Component {
 
@@ -12,11 +11,11 @@ class App extends Component {
         this.state = {
             showLoginModal: false,
             showRegisterModal: false
-        }
-        this.login = this.login.bind(this)
-        this.register = this.register.bind(this)
-        this.closeLoginModal = this.closeLoginModal.bind(this)
-        this.closeRegisterModal = this.closeRegisterModal.bind(this)
+        };
+        this.login = this.login.bind(this);
+        this.register = this.register.bind(this);
+        this.closeLoginModal = this.closeLoginModal.bind(this);
+        this.closeRegisterModal = this.closeRegisterModal.bind(this);
     }
 
     login() {
@@ -28,32 +27,33 @@ class App extends Component {
     register() {
         this.setState({
             showRegisterModal: true
-        })
+        });
     }
 
     closeLoginModal() {
         this.setState({
             showLoginModal: false
-        })
+        });
     }
 
     closeRegisterModal() {
         this.setState({
             showRegisterModal: false
-        })
+        });
     }
 
     render() {
         return (
             <div>
-                <Menu inverted pointing stackable>
+                <Menu secondary stackable>
                     <Menu.Menu position='right'>
-                        <Menu.Item name='login' onClick={this.login} />
-                        <Menu.Item name='register' onClick={this.register} />
+                        <Menu.Item name='login' onClick={this.login}/>
+                        <Menu.Item name='register' onClick={this.register}/>
                     </Menu.Menu>
                 </Menu>
-                <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal} />
-                <Register showRegisterModal={this.state.showRegisterModal} closeRegisterModal={this.closeRegisterModal}/>
+                <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
+                <Register showRegisterModal={this.state.showRegisterModal}
+                          closeRegisterModal={this.closeRegisterModal}/>
             </div>
         )
     }

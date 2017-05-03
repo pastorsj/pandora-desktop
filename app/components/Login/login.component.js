@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import { Modal, Header, Form, Label, Input, Button, Icon } from 'semantic-ui-react';
+import React, {Component} from 'react';
+import {Modal, Header, Form, Label, Input, Button, Icon} from 'semantic-ui-react';
 
 class Login extends Component {
 
@@ -46,28 +46,31 @@ class Login extends Component {
     render() {
         return (
             <div>
-                <Modal open={this.props.showLoginModal} onClose={this.props.closeLoginModal} closeIcon='close' size='small' dimmer='blurring'>
-                    <Header icon='archive' content='Login' />
+                <Modal open={this.props.showLoginModal} onClose={this.props.closeLoginModal} closeIcon='close'
+                       size='small' dimmer='blurring'>
+                    <Header icon='archive' content='Login'/>
                     <Modal.Content>
                         <Form>
                             <Form.Field error={this.state.username === ''}>
                                 <Label>Username</Label>
-                                <Input placeholder='Username' onChange={this.getUsername} value={this.state.username} spellCheck='true'/>
+                                <Input placeholder='Username' onChange={this.getUsername} value={this.state.username}
+                                       spellCheck='true'/>
                             </Form.Field>
                             <Form.Field error={this.state.password === ''}>
                                 <Label>Password</Label>
-                                <Input placeholder='Password' onChange={this.getPassword} value={this.state.password} spellCheck='true'/>
+                                <Input placeholder='Password' onChange={this.getPassword} value={this.state.password}
+                                       spellCheck='true'/>
                             </Form.Field>
                         </Form>
                     </Modal.Content>
                     <Modal.Actions>
                         <Button.Group>
                             <Button color='red' onClick={this.props.closeLoginModal}>
-                                <Icon name='remove' /> Close
+                                <Icon name='remove'/> Close
                             </Button>
                             <Button.Or />
                             <Button color='green' onClick={this.login} disabled={!this.state.validForm}>
-                                <Icon name='save' /> Login
+                                <Icon name='save'/> Login
                             </Button>
                         </Button.Group>
                     </Modal.Actions>

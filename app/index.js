@@ -6,8 +6,8 @@ import App from './components/App/app.component';
  * Renders the router component
  */
 ReactDOM.render(
-  <Router history={hashHistory}>
-    <Route path="/" component={App} />
-  </Router>,
-  document.getElementById('root')
+    <Router history={hashHistory}>
+        <Route path="/" component={App} />
+    </Router>,
+    document.getElementById('root')
 );
