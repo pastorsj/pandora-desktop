@@ -1,7 +1,7 @@
 #root
 {
     height: 100%;
-    background: linear-gradient(#426cf6, #439be9);
+    background: linear-gradient(#439be9, #426cf6);
     display: flex;
     flex-direction: column;
 }
