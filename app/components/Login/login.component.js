@@ -50,7 +50,7 @@ class Login extends Component {
             }
         }).then((res) => {
             console.log('Result ', res.data);
-            Constants.cookies.set('jwt', res.data);
+            window.sessionStorage.setItem('jwt', res.data);
             this.props.closeLoginModal();
         }).catch((err) => {
             console.error('Error ', err);

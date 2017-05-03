@@ -71,7 +71,7 @@ class Register extends Component {
             }
         }).then((res) => {
             console.log('Result ', res.data);
-            Constants.cookies.set('jwt', res.data);
+            window.sessionStorage.setItem('jwt', res.data);
             this.props.closeRegisterModal();
         }).catch((err) => {
             console.error('Error ', err);
