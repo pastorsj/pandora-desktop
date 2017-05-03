@@ -5,10 +5,16 @@
     display: flex;
     flex-direction: column;
 }
+
 #menu {
     height: 50px;
     background: yellow;
 }
+
 #music {
     flex:1;
+}
+
+#player {
+    margin: 0 auto;
 }
