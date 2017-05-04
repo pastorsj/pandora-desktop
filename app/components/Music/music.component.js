@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ProgressBar from './ProgressBar/progress.component';
-import {Button} from 'semantic-ui-react';
+import {Button, Image, Card} from 'semantic-ui-react';
 import Constants from '../constants';
 import Sound from 'react-sound';
 import axios from 'axios';
@@ -17,6 +17,7 @@ class Music extends Component {
             volume: 50,
             songInfo: {},
             songId: 0,
+            albumArt: ""
         }
         this.playStream = this.playStream.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
@@ -59,11 +60,27 @@ class Music extends Component {
                     url: `${Constants.API_URL}/song/play/${this.state.songId}`,
                     playStatus: Sound.status.PLAYING
                 });
+                this.retrieveAlbumArt()
             });
 
         }).catch((err) => {
             console.error("An error has occurred ", err)
         });
+    }
+
+    retrieveAlbumArt() {
+        axios({
+            method: 'get',
+            url: `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=e0abe5f80ed6b66ebc2e278d8cc2249a&artist=${this.state.songInfo.artist}&album=${this.state.songInfo.album}&format=json`
+        }).then((res) => {
+            if (res.data.album.image.length > 2) {
+                this.setState({
+                    albumArt: res.data.album.image[3]['#text']
+                });
+            }
+        }).catch((err) => {
+            console.error('Error ', err);
+        })
     }
 
     pauseStream() {
@@ -77,7 +94,7 @@ class Music extends Component {
             playStatus: Sound.status.STOPPED
         }, () => {
             const jwt = window.sessionStorage.getItem('jwt');
-            this.playSong();
+            this.playSong(jwt);
         })
     }
 
@@ -96,6 +113,24 @@ class Music extends Component {
                     playFromPosition={this.state.playPosition}
                     volume={this.state.volume}
                     onFinishedPlaying={this.nextSong}/>
+                <div className="song-info">
+                    {
+                        this.state.playStatus === Sound.status.PLAYING || this.state.playStatus === Sound.status.PAUSED ? (
+                            <div>
+                                <Image src={this.state.albumArt} size='large' centered />
+                                <Card centered>
+                                    <Card.Content header={this.state.songInfo.title} />
+                                    <Card.Content>
+                                        {this.state.songInfo.artist}
+                                    </Card.Content>
+                                    <Card.Content extra>
+                                        {this.state.songInfo.album}, {this.state.songInfo.year}
+                                    </Card.Content>
+                                </Card>
+                            </div>
+                        ) : (<div></div>)
+                    }
+                </div>
                 <ProgressBar totalTime={100}/>
                 <div className="control-bg">
                     <div id="controls">
