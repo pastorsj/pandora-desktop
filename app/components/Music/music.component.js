@@ -4,6 +4,7 @@ import {Button} from 'semantic-ui-react';
 import Constants from '../constants';
 import Sound from 'react-sound';
 import axios from 'axios';
+import Slider, { Range } from 'rc-slider';
 
 class Music extends Component {
 
@@ -20,6 +21,7 @@ class Music extends Component {
         this.playStream = this.playStream.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
         this.nextSong = this.nextSong.bind(this);
+        this.adjustVolume = this.adjustVolume.bind(this);
     }
 
     playStream() {
@@ -79,6 +81,12 @@ class Music extends Component {
         })
     }
 
+    adjustVolume(volume) {
+        this.setState({
+            volume
+        })
+    }
+
     render() {
         return (
             <div id="music">
@@ -88,18 +96,22 @@ class Music extends Component {
                     playFromPosition={this.state.playPosition}
                     volume={this.state.volume}
                     onFinishedPlaying={this.nextSong}/>
-                <Button.Group labeled id="player">
-                    {
-                        this.state.playStatus === Sound.status.PLAYING ? (
-                            <Button icon='pause' basic color='blue' inverted size='big' content='Pause'
-                                    onClick={this.pauseStream}/>) : (
-                            <Button icon='play' basic color='blue' inverted size='big' content='Play'
-                                    onClick={this.playStream}/>)
-                    }
-                    <Button icon='fast forward' basic color='blue' inverted size='big' content='Next'
-                            onClick={this.nextSong}/>
-                </Button.Group>
-                <ProgressBar totalTime={100} time={10}/>
+                <ProgressBar totalTime={100}/>
+                <div className="control-bg">
+                    <div id="controls">
+                        {
+                            this.state.playStatus === Sound.status.PLAYING ? (
+                                <Button icon='pause' basic color='blue' inverted size='big'
+                                        onClick={this.pauseStream}/>) : (
+                                <Button icon='play' basic color='blue' inverted size='big'
+                                        onClick={this.playStream}/>)
+                        }
+                        <Button icon='fast forward' basic color='blue' inverted size='big'
+                                onClick={this.nextSong}/>
+                    </div>
+                    <br />
+                    <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
+                </div>
             </div>
         )
     }

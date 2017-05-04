@@ -30,6 +30,7 @@
     "classnames": "^2.2.5",
     "electron": "^1.6.6",
     "electron-reload": "^1.1.0",
+    "rc-slider": "^7.0.2",
     "react": "^15.5.4",
     "react-desktop": "^0.3.0",
     "react-dom": "^15.5.4",

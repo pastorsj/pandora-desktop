@@ -74,9 +74,7 @@ class App extends Component {
                 <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
                 <Register showRegisterModal={this.state.showRegisterModal}
                           closeRegisterModal={this.closeRegisterModal}/>
-                <Container>
-                    <Music />
-                </Container>
+                <Music />
             </div>
         )
     }

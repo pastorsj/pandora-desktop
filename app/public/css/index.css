@@ -14,8 +14,8 @@
 #music {
     flex:1;
     position: absolute;
-    width: 80%;
-    bottom: 10px;
+	min-width: 100%;
+    bottom: 0px;
 }
 
 #player {
@@ -52,4 +52,14 @@
 .menuButton:active {
 	position:relative;
 	top:1px;
+}
+
+#controls {
+	margin: 0 auto;
+	text-align: center;
+}
+
+.control-bg {
+	padding-top: 5px;
+	background-color: #284194;
 }
