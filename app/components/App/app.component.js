@@ -29,7 +29,7 @@ class App extends Component {
     }
 
     logout() {
-        window.sessionStorage.setItem("jwt", null)
+        window.sessionStorage.clear("jwt")
         this.forceUpdate()
     }
 
@@ -59,7 +59,7 @@ class App extends Component {
                         <Image src="./app/public/css/assets/logo.png" size='small'/>
                     </Menu.Item>
                     {
-                        window.sessionStorage.getItem('jwt') !== "null" ?
+                        window.sessionStorage.getItem('jwt') !== null ?
                             (<Menu.Menu position='right'>
                                 <Menu.Item name='logout' className="menuButton"
                                            onClick={this.logout}>Logout</Menu.Item>
