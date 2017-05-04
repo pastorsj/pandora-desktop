@@ -56,31 +56,37 @@ class Music extends Component {
     playSong(jwt) {
         this.refreshToken(jwt).then((res) => {
             console.log('Refreshed jwt', res.data);
-            window.sessionStorage.setItem('jwt', res.data)
-            axios({
-                method: 'get',
-                url: `${Constants.API_URL}/play/song/random`,
-                headers: {
-                    "Authorization": "Bearer " + res.data
-                }
-            }).then((res) => {
-                console.log("Data ", res);
-                this.setState({
-                    songInfo: res.data,
-                    songId: res.data.id
-                }, () => {
+            if (res.data) {
+                window.sessionStorage.setItem('jwt', res.data)
+                axios({
+                    method: 'get',
+                    url: `${Constants.API_URL}/play/song/random`,
+                    headers: {
+                        "Authorization": "Bearer " + res.data
+                    }
+                }).then((res) => {
+                    console.log("Data ", res);
                     this.setState({
-                        url: `${Constants.API_URL}/song/play/${this.state.songId}`,
-                        playStatus: Sound.status.PLAYING
+                        songInfo: res.data,
+                        songId: res.data.id
+                    }, () => {
+                        this.setState({
+                            url: `${Constants.API_URL}/song/play/${this.state.songId}`,
+                            playStatus: Sound.status.PLAYING
+                        });
+                        this.retrieveAlbumArt()
                     });
-                    this.retrieveAlbumArt()
-                });
 
-            }).catch((err) => {
-                console.error("An error has occurred ", err)
-            });
+                }).catch((err) => {
+                    console.error("An error has occurred ", err)
+                });
+            } else {
+                console.error("You must login again")
+                this.props.logout()
+            }
         }).catch((err) => {
             console.error("You must login again", err)
+            this.props.logout()
         });
     }
 
