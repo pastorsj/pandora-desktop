@@ -74,7 +74,10 @@ class App extends Component {
                 <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
                 <Register showRegisterModal={this.state.showRegisterModal}
                           closeRegisterModal={this.closeRegisterModal}/>
-                <Music logout={ this.logout }/>
+                {
+                    window.sessionStorage.getItem('jwt') !== null ? ( <Music logout={ this.logout }/>) : (<div></div>)
+                }
+               
             </div>
         )
     }
