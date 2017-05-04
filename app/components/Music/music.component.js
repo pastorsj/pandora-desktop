@@ -43,28 +43,44 @@ class Music extends Component {
         }
     }
 
-    playSong(jwt) {
-        axios({
+    refreshToken(jwt) {
+        return axios({
             method: 'get',
-            url: `${Constants.API_URL}` + "/play/song/random",
+            url: `${Constants.API_URL}/user/refresh`,
             headers: {
                 "Authorization": "Bearer " + jwt
             }
-        }).then((res) => {
-            console.log("Data ", res);
-            this.setState({
-                songInfo: res.data,
-                songId: res.data.id
-            }, () => {
-                this.setState({
-                    url: `${Constants.API_URL}/song/play/${this.state.songId}`,
-                    playStatus: Sound.status.PLAYING
-                });
-                this.retrieveAlbumArt()
-            });
+        });
+    }
 
+    playSong(jwt) {
+        this.refreshToken(jwt).then((res) => {
+            console.log('Refreshed jwt', res.data);
+            window.sessionStorage.setItem('jwt', res.data)
+            axios({
+                method: 'get',
+                url: `${Constants.API_URL}/play/song/random`,
+                headers: {
+                    "Authorization": "Bearer " + res.data
+                }
+            }).then((res) => {
+                console.log("Data ", res);
+                this.setState({
+                    songInfo: res.data,
+                    songId: res.data.id
+                }, () => {
+                    this.setState({
+                        url: `${Constants.API_URL}/song/play/${this.state.songId}`,
+                        playStatus: Sound.status.PLAYING
+                    });
+                    this.retrieveAlbumArt()
+                });
+
+            }).catch((err) => {
+                console.error("An error has occurred ", err)
+            });
         }).catch((err) => {
-            console.error("An error has occurred ", err)
+            console.error("You must login again", err)
         });
     }
 
