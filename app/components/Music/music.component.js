@@ -17,16 +17,9 @@ class Music extends Component {
             songInfo: {},
             songId: 0,
         }
-        this.stopStream = this.stopStream.bind(this);
         this.playStream = this.playStream.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
         this.nextSong = this.nextSong.bind(this);
-    }
-
-    stopStream() {
-        this.setState({
-            playStatus: Sound.status.STOPPED
-        });
     }
 
     playStream() {
@@ -42,29 +35,33 @@ class Music extends Component {
                 console.error("You must login first");
                 return;
             } else {
-                axios({
-                    method: 'get',
-                    url: `${Constants.API_URL}` + "/play/song/random",
-                    headers: {
-                        "Authorization": "Bearer " + jwt
-                    }
-                }).then((res) => {
-                    console.log("Data ", res);
-                    this.setState({
-                        songInfo: res.data,
-                        songId: res.data.id
-                    }, () => {
-                        this.setState({
-                            url: `${Constants.API_URL}/song/play/${this.state.songId}`,
-                            playStatus: Sound.status.PLAYING
-                        });
-                    });
-
-                }).catch((err) => {
-                    console.error("An error has occured ", err)
-                });
+                this.playSong(jwt);
             }
         }
+    }
+
+    playSong(jwt) {
+        axios({
+            method: 'get',
+            url: `${Constants.API_URL}` + "/play/song/random",
+            headers: {
+                "Authorization": "Bearer " + jwt
+            }
+        }).then((res) => {
+            console.log("Data ", res);
+            this.setState({
+                songInfo: res.data,
+                songId: res.data.id
+            }, () => {
+                this.setState({
+                    url: `${Constants.API_URL}/song/play/${this.state.songId}`,
+                    playStatus: Sound.status.PLAYING
+                });
+            });
+
+        }).catch((err) => {
+            console.error("An error has occurred ", err)
+        });
     }
 
     pauseStream() {
@@ -74,7 +71,12 @@ class Music extends Component {
     }
 
     nextSong() {
-
+        this.setState({
+            playStatus: Sound.status.STOPPED
+        }, () => {
+            const jwt = window.sessionStorage.getItem('jwt');
+            this.playSong();
+        })
     }
 
     render() {
@@ -87,12 +89,13 @@ class Music extends Component {
                     volume={this.state.volume}
                     onFinishedPlaying={this.nextSong}/>
                 <Button.Group labeled id="player">
-                    <Button icon='stop' basic color='blue' inverted size='big' content='Stop'
-                            onClick={this.stopStream}/>
-                    <Button icon='play' basic color='blue' inverted size='big' content='Play'
-                            onClick={this.playStream}/>
-                    <Button icon='pause' basic color='blue' inverted size='big' content='Pause'
-                            onClick={this.pauseStream}/>
+                    {
+                        this.state.playStatus === Sound.status.PLAYING ? (
+                            <Button icon='pause' basic color='blue' inverted size='big' content='Pause'
+                                    onClick={this.pauseStream}/>) : (
+                            <Button icon='play' basic color='blue' inverted size='big' content='Play'
+                                    onClick={this.playStream}/>)
+                    }
                     <Button icon='fast forward' basic color='blue' inverted size='big' content='Next'
                             onClick={this.nextSong}/>
                 </Button.Group>

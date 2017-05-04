@@ -1,11 +1,11 @@
 import React, {Component} from "react";
-import {Menu, Container} from "semantic-ui-react";
+import {Menu, Container, Image} from "semantic-ui-react";
 
 import Login from "../Login/login.component";
 import Register from "../Register/register.component";
 import Music from "../Music/music.component";
 
-
+// import logo from '../../public/css/assets/logo.png'
 
 class App extends Component {
 
@@ -55,13 +55,20 @@ class App extends Component {
         return (
             <div>
                 <Menu secondary id="menu">
-                    <Menu.Menu>
-                        <img src="/Users/TheSiscoKid/pandora-desktop/app/public/css/assets/logo.png" id="logo"></img>
-                    </Menu.Menu>
+                    <Menu.Item header>
+                        <Image src="./app/public/css/assets/logo.png" size='small'/>
+                    </Menu.Item>
                     {
                         window.sessionStorage.getItem('jwt') !== "null" ?
-                            (<Menu.Menu position='right'><button name='logout' className="menuButton" onClick={this.logout}>Logout</button></Menu.Menu>) :
-                            (<Menu.Menu position='right'><button name='login' className="menuButton" onClick={this.login}>Login</button><button name='register' className="menuButton" onClick={this.register}>Register</button></Menu.Menu>)
+                            (<Menu.Menu position='right'>
+                                <Menu.Item name='logout' className="menuButton"
+                                           onClick={this.logout}>Logout</Menu.Item>
+                            </Menu.Menu>) :
+                            (<Menu.Menu position='right'>
+                                <Menu.Item name='login' className="menuButton"
+                                                                    onClick={this.login}>Login</Menu.Item>
+                                <Menu.Item name='register' className="menuButton" onClick={this.register}>Register</Menu.Item>
+                            </Menu.Menu>)
                     }
                 </Menu>
                 <Login showLoginModal={this.state.showLoginModal} closeLoginModal={this.closeLoginModal}/>
