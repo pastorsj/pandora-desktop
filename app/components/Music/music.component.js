@@ -106,7 +106,7 @@ class Music extends Component {
         }).catch((err) => {
             console.error('Error ', err);
             this.setState({
-                albumArt: "./app/public/css/assets/default-arts.png"
+                albumArt: "./app/public/css/assets/default-art.png"
             });
         })
     }
