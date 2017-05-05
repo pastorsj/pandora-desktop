@@ -144,9 +144,15 @@ class Music extends Component {
     }
 
     handleSongPlaying(audio){
+        var duration;
+        if (audio.duration == 0 || audio.duration == null) {
+            duration = this.state.songInfo.duration * 1000
+        } else {
+            duration = audio.duration
+        }
         this.setState({  elapsed: this.formatMilliseconds(audio.position),
-                      total: this.formatMilliseconds(audio.total || this.state.songInfo.duration * 1000),
-                      position: audio.position / audio.duration })
+                      total: this.formatMilliseconds(duration),
+                      position: audio.position / duration })
    }
 
     render() {
