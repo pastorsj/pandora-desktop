@@ -6,23 +6,32 @@ class ProgressBar extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            percent: (this.props.time / this.props.totalTime) * 100,
-            time: this.props.time
+            position: this.props.position
         }
     }
 
     componentWillReceiveProps(nextProps) {
+        console.log("Next props", nextProps);
         this.setState({
-            percent: nextProps.time / nextProps.totalTime,
-            time: nextProps.time
-        })
+            position: nextProps.position
+        });
     }
+
 
     render() {
         return (
-            <Progress percent={this.state.percent} indicating inverted color='grey' size='small'>{this.state.time}</Progress>
+            <Progress percent={this.state.position * 100} indicating inverted color='grey' size='tiny'>{this.props.elapsed} / {this.props.total}</Progress>
         )
     }
 }
 
 export default ProgressBar;
+
+
+            /*/*<div className="progress">
+                <span className="player__time-elapsed">{this.props.elapsed}</span>
+                <progress
+                value={this.props.position}
+                max="1"></progress>
+                <span className="player__time-total">{this.props.total}</span>
+            </div>*/

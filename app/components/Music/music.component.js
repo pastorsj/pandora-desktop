@@ -17,7 +17,10 @@ class Music extends Component {
             volume: 50,
             songInfo: {},
             songId: 0,
-            albumArt: ""
+            albumArt: "",
+            tracks: [],
+            elapsed: '00:00',
+            total: '00:00'
         }
         this.playStream = this.playStream.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
@@ -129,15 +132,26 @@ class Music extends Component {
         })
     }
 
+    formatMilliseconds(milliseconds) {
+        var hours = Math.floor(milliseconds / 3600000);
+        milliseconds = milliseconds % 3600000;
+        var minutes = Math.floor(milliseconds / 60000);
+        milliseconds = milliseconds % 60000;
+        var seconds = Math.floor(milliseconds / 1000);
+        milliseconds = Math.floor(milliseconds % 1000);
+        return (minutes < 10 ? '0' : '') + minutes + ':' +
+            (seconds < 10 ? '0' : '') + seconds;
+    }
+
+    handleSongPlaying(audio){
+        this.setState({  elapsed: this.formatMilliseconds(audio.position),
+                      total: this.formatMilliseconds(audio.duration),
+                      position: audio.position / audio.duration })
+   }
+
     render() {
         return (
             <div id="music">
-                <Sound
-                    url={this.state.url}
-                    playStatus={this.state.playStatus}
-                    playFromPosition={this.state.playPosition}
-                    volume={this.state.volume}
-                    onFinishedPlaying={this.nextSong}/>
                 <div className="song-info">
                     {
                         this.state.playStatus === Sound.status.PLAYING || this.state.playStatus === Sound.status.PAUSED ? (
@@ -156,7 +170,18 @@ class Music extends Component {
                         ) : (<div></div>)
                     }
                 </div>
-                <ProgressBar totalTime={100}/>
+                <Sound 
+                    id="player"
+                    url={this.state.url}
+                    playStatus={this.state.playStatus}
+                    playFromPosition={this.state.playPosition}
+                    volume={this.state.volume}
+                    onPlaying={this.handleSongPlaying.bind(this)}
+                    onFinishedPlaying={this.nextSong}/>
+                <ProgressBar
+                    elapsed={this.state.elapsed}
+                    total={this.state.total}
+                    position={this.state.position}/>
                 <div className="control-bg">
                     <div id="controls">
                         {
