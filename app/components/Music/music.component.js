@@ -145,7 +145,7 @@ class Music extends Component {
 
     handleSongPlaying(audio){
         this.setState({  elapsed: this.formatMilliseconds(audio.position),
-                      total: this.formatMilliseconds(audio.duration),
+                      total: this.formatMilliseconds(audio.total || this.state.songInfo.duration * 1000),
                       position: audio.position / audio.duration })
    }
 
