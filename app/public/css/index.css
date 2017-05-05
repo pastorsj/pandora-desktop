@@ -63,3 +63,11 @@
 	padding-top: 5px;
 	background-color: #284194;
 }
+
+#volume {
+	position: absolute;
+	bottom: 30px;
+	right: 20px;
+	padding-right: 10px;
+	width: 25%;
+}

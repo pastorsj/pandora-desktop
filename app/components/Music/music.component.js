@@ -183,6 +183,9 @@ class Music extends Component {
                     total={this.state.total}
                     position={this.state.position}/>
                 <div className="control-bg">
+                    <span id="volume" >
+                        <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
+                    </span>
                     <div id="controls">
                         {
                             this.state.playStatus === Sound.status.PLAYING ? (
@@ -195,7 +198,6 @@ class Music extends Component {
                                 onClick={this.nextSong}/>
                     </div>
                     <br />
-                    <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
                 </div>
             </div>
         )
