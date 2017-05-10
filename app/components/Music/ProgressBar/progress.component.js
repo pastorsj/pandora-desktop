@@ -11,7 +11,6 @@ class ProgressBar extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        console.log("Next props", nextProps);
         this.setState({
             position: nextProps.position
         });
@@ -26,12 +25,3 @@ class ProgressBar extends Component {
 }
 
 export default ProgressBar;
-
-
-            /*/*<div className="progress">
-                <span className="player__time-elapsed">{this.props.elapsed}</span>
-                <progress
-                value={this.props.position}
-                max="1"></progress>
-                <span className="player__time-total">{this.props.total}</span>
-            </div>*/
