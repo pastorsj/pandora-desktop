@@ -23,6 +23,7 @@ class Music extends Component {
             total: '00:00'
         }
         this.playStream = this.playStream.bind(this);
+        this.toggleLike = this.toggleLike.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
         this.nextSong = this.nextSong.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
@@ -117,6 +118,37 @@ class Music extends Component {
         });
     }
 
+    toggleLike() {
+        if (this.state.songId != null) {
+            const jwt = window.sessionStorage.getItem('jwt');
+            if (this.state.songInfo.liked) {
+                //unlike the song
+                axios({
+                method: 'get',
+                url: `${Constants.API_URL}/dislike/song/${this.state.songId}`,
+                headers: {"Authorization": "Bearer " + jwt}
+                }).then((res) => {
+                //Song has been liked
+                this.state.songInfo.liked = false
+                }).catch((err) => {
+                    console.error('Error ', err);
+                })
+            } else {
+                //like the song
+                axios({
+                method: 'get',
+                url: `${Constants.API_URL}/like/song/${this.state.songId}`,
+                headers: {"Authorization": "Bearer " + jwt}
+                }).then((res) => {
+                //Song has been liked
+                this.state.songInfo.liked = true
+                }).catch((err) => {
+                    console.error('Error ', err);
+                })
+            }
+        }
+    }
+
     nextSong() {
         this.setState({
             playStatus: Sound.status.STOPPED
@@ -193,6 +225,13 @@ class Music extends Component {
                         <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
                     </span>
                     <div id="controls">
+                        {
+                            (this.state.songInfo && this.state.songInfo.liked) ? (
+                                <Button icon='thumbs outline down' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
+                            ) : (
+                                <Button icon='thumbs outline up' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
+                            )
+                        }
                         {
                             this.state.playStatus === Sound.status.PLAYING ? (
                                 <Button icon='pause' basic color='blue' inverted size='big'
