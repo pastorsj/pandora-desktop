@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import ProgressBar from './ProgressBar/progress.component';
-import {Button, Image, Card} from 'semantic-ui-react';
+import {Button, Image, Card, Dropdown} from 'semantic-ui-react';
 import Constants from '../constants';
 import Sound from 'react-sound';
 import axios from 'axios';
@@ -20,13 +20,65 @@ class Music extends Component {
             albumArt: "",
             tracks: [],
             elapsed: '00:00',
-            total: '00:00'
+            total: '00:00',
+            station: 'song/random',
+            stations: []
         }
         this.playStream = this.playStream.bind(this);
         this.toggleLike = this.toggleLike.bind(this);
         this.pauseStream = this.pauseStream.bind(this);
         this.nextSong = this.nextSong.bind(this);
         this.adjustVolume = this.adjustVolume.bind(this);
+        this.getStations = this.getStations.bind(this);
+        this.changeStation = this.changeStation.bind(this);
+    }
+
+    componentDidMount() {
+        this.getStations()
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            stationURL: nextProps.stationURL
+        });
+    }
+
+    getStations() {
+        const jwt = window.sessionStorage.getItem('jwt');
+        axios({
+            method: 'get',
+            url: `${Constants.API_URL}/genres`,
+            headers: {
+                "Authorization": "Bearer " + jwt
+            }
+        }).then((res) => {
+            var temp = [
+                {
+                    key: 'random',
+                    text: 'Random',
+                    value: "song/random"
+                },
+                {
+                    key: 'likes',
+                    text: "Likes",
+                    value: 'likes'
+                }
+            ]
+            for (var genre in res.data) {
+                temp.push(
+                    {
+                        key: res.data[genre],
+                        text: res.data[genre],
+                        value: "genre/" + res.data[genre]
+                    }
+                );
+            }
+            this.setState({
+                stations: temp
+            }, () => {
+                console.log('stations', this.state.stations);
+            });
+        })
     }
 
     playStream() {
@@ -64,7 +116,7 @@ class Music extends Component {
                 window.sessionStorage.setItem('jwt', res.data)
                 axios({
                     method: 'get',
-                    url: `${Constants.API_URL}/play/song/random`,
+                    url: `${Constants.API_URL}/play/${this.state.station}`,
                     headers: {
                         "Authorization": "Bearer " + res.data
                     }
@@ -99,10 +151,14 @@ class Music extends Component {
             method: 'get',
             url: `http://ws.audioscrobbler.com/2.0/?method=album.getinfo&api_key=e0abe5f80ed6b66ebc2e278d8cc2249a&artist=${this.state.songInfo.artist}&album=${this.state.songInfo.album}&format=json`
         }).then((res) => {
-            if (res.data.album.image.length > 2) {
+            if (res.data.album && res.data.album.image.length > 2 && res.data.album.image[3]['#text'] != "") {
                 this.setState({
                     albumArt: res.data.album.image[3]['#text']
                 });
+            } else {
+                this.setState({
+                    albumArt: "./app/public/css/assets/default-art.png"
+                });                
             }
         }).catch((err) => {
             console.error('Error ', err);
@@ -187,62 +243,80 @@ class Music extends Component {
                       position: audio.position / duration })
    }
 
+   changeStation(event, station) {
+       console.log('Station', station)
+       if (station.value) {
+           this.setState({
+               station: station.value,
+               playStatus: Sound.status.STOPPED
+           }, () => {
+            this.playStream()
+           })
+       }
+   }
+
     render() {
         return (
-            <div id="music">
-                <div className="song-info">
-                    {
-                        this.state.playStatus === Sound.status.PLAYING || this.state.playStatus === Sound.status.PAUSED ? (
-                            <div>
-                                <Image src={this.state.albumArt} size='large' centered />
-                                <Card centered>
-                                    <Card.Content header={this.state.songInfo.title} />
-                                    <Card.Content>
-                                        {this.state.songInfo.artist}
-                                    </Card.Content>
-                                    <Card.Content extra>
-                                        {this.state.songInfo.album}, {this.state.songInfo.year}
-                                    </Card.Content>
-                                </Card>
-                            </div>
-                        ) : (<div></div>)
-                    }
-                </div>
-                <Sound 
-                    id="player"
-                    url={this.state.url}
-                    playStatus={this.state.playStatus}
-                    playFromPosition={this.state.playPosition}
-                    volume={this.state.volume}
-                    onPlaying={this.handleSongPlaying.bind(this)}
-                    onFinishedPlaying={this.nextSong}/>
-                <ProgressBar
-                    elapsed={this.state.elapsed}
-                    total={this.state.total}
-                    position={this.state.position}/>
-                <div className="control-bg">
-                    <span id="volume" >
-                        <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
-                    </span>
-                    <div id="controls">
+            <div>
+                <Dropdown options={this.state.stations} floating button className='icon' placeholder='Stations' onChange={this.changeStation}></Dropdown>
+                <div id="music">
+                    <div className="song-info">
                         {
-                            (this.state.songInfo && this.state.songInfo.liked) ? (
-                                <Button icon='thumbs outline down' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
-                            ) : (
-                                <Button icon='thumbs outline up' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
-                            )
+                            this.state.playStatus === Sound.status.PLAYING || this.state.playStatus === Sound.status.PAUSED ? (
+                                <div>
+                                    <Image src={this.state.albumArt} size='large' centered />
+                                    <Card centered>
+                                        <Card.Content header={this.state.songInfo.title} />
+                                        <Card.Content>
+                                            {this.state.songInfo.artist}
+                                        </Card.Content>
+                                        <Card.Content extra>
+                                            {this.state.songInfo.album}, {this.state.songInfo.year}
+                                        </Card.Content>
+                                    </Card>
+                                </div>
+                            ) : (<div></div>)
                         }
-                        {
-                            this.state.playStatus === Sound.status.PLAYING ? (
-                                <Button icon='pause' basic color='blue' inverted size='big'
-                                        onClick={this.pauseStream}/>) : (
-                                <Button icon='play' basic color='blue' inverted size='big'
-                                        onClick={this.playStream}/>)
-                        }
-                        <Button icon='fast forward' basic color='blue' inverted size='big'
-                                onClick={this.nextSong}/>
                     </div>
-                    <br />
+                    <Sound 
+                        id="player"
+                        url={this.state.url}
+                        playStatus={this.state.playStatus}
+                        playFromPosition={this.state.playPosition}
+                        volume={this.state.volume}
+                        onPlaying={this.handleSongPlaying.bind(this)}
+                        onFinishedPlaying={this.nextSong}/>
+                    <ProgressBar
+                        elapsed={this.state.elapsed}
+                        total={this.state.total}
+                        position={this.state.position}/>
+                    <div className="control-bg">
+                        <span id="volume" >
+                            <Slider step={0.25} value={this.state.volume} onChange={this.adjustVolume}/>
+                        </span>
+                        <div id="controls">
+                            {
+                                (this.state.songInfo && this.state.songInfo.liked) ? (
+                                    <Button icon='thumbs outline down' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
+                                ) : (
+                                    <Button icon='thumbs outline up' basic color='blue' inverted size='big' disabled={this.state.songInfo.liked == null} onClick={this.toggleLike}/>
+                                )
+                            }
+                            {
+                                this.state.playStatus === Sound.status.PLAYING ? (
+                                    <Button icon='pause' basic color='blue' inverted size='big'
+                                            onClick={this.pauseStream}/>) : (
+                                    <Button icon='play' basic color='blue' inverted size='big'
+                                            onClick={this.playStream}/>)
+                            }
+                            <Button icon='fast forward' basic color='blue' inverted size='big'
+                                    onClick={this.nextSong}/>
+                        </div>
+                        <span id="stations" >
+
+                        </span>
+                        <br />
+                    </div>
                 </div>
             </div>
         )
